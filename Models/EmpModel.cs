@@ -1,7 +1,9 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace employee_management_agile.Models
 {
+    [Table("EmployeesTable")]
     public class EmpModel
     {
         [Key]
