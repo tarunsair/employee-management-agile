@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using employee_management_agile.Models;
 
 namespace employee_management_agile.Models
 {
@@ -8,6 +9,6 @@ namespace employee_management_agile.Models
         {
         }
 
-        public DbSet<EmpModel> EmployeeTable { get; set; }
+        public DbSet<EmpModel> EmployeesTable { get; set; }
     }
 }
