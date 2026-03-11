@@ -18,7 +18,6 @@ namespace employee_management_agile.Models
         [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$", ErrorMessage = "Password must contain at least one uppercase letter, one lowercase letter, and one number.")]
         [Display(Name = "Password")]
         public string Password { get; set; }
-        public string Role { get; set; } = "Employee"; // Default role is Employee
         [Required(ErrorMessage = "Email is required.")]
         [EmailAddress(ErrorMessage = "Invalid email address.")]
         [Display(Name = "Email")]

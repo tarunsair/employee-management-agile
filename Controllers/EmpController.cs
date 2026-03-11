@@ -186,7 +186,7 @@ namespace employee_management_agile.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin,Manager")]
-        public IActionResult RolesUpdate(EmpModel employee)
+        public IActionResult RoleUpdate(EmpModel employee)
         {
             if (ModelState.IsValid)
             {
