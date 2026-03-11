@@ -38,7 +38,6 @@ namespace employee_management_agile.Controllers
                     var httpclaims = new List<Claim>()
                     {
                     new Claim(ClaimTypes.Name, user.Username),
-                    new Claim(ClaimTypes.Role, user.Role)
                     };
                     var identity = new ClaimsIdentity(httpclaims, CookieAuthenticationDefaults.AuthenticationScheme);
                     var principal = new ClaimsPrincipal(identity);
