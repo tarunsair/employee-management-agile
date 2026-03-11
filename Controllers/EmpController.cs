@@ -168,5 +168,46 @@ namespace employee_management_agile.Controllers
             return RedirectToAction("GetAllEmployees");
         }
 
+        [HttpGet]
+        [Authorize(Roles = "Admin,Manager")]
+        public IActionResult RolesUpdate(int id)
+        {
+            var employee = _context.EmployeesTable.FirstOrDefault(e => e.Id == id);
+
+            if (employee == null)
+
+            {
+
+                return NotFound();
+            }
+
+            return View(employee);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin,Manager")]
+        public IActionResult RolesUpdate(EmpModel employee)
+        {
+            if (ModelState.IsValid)
+            {
+                var existingEmployee = _context.EmployeesTable.FirstOrDefault(e => e.Id == employee.Id);
+
+                if (existingEmployee == null)
+                {
+                    return NotFound();
+                }
+
+                existingEmployee.Role = employee.Role;
+
+                _context.EmployeesTable.Update(existingEmployee);
+
+                _context.SaveChanges();
+
+                return RedirectToAction("GetAllEmployees");
+            }
+
+            return View(employee);
+        }
+
     }
 }
