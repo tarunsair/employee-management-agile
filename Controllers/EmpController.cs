@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using employee_management_agile.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace employee_management_agile.Controllers
 
@@ -24,6 +27,7 @@ namespace employee_management_agile.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin,Manager,Employee")]
+        [Route("GetAllEmployees")]
         public async Task<IActionResult> GetAllEmployees()
 
         {
@@ -35,6 +39,7 @@ namespace employee_management_agile.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin,Manager,Employee")]
+        [Route("GetEmployeeById/{id}")]
         public async Task<IActionResult> GetEmployeeById(int id)
 
         {
@@ -53,6 +58,7 @@ namespace employee_management_agile.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin,Manager")]
+        [Route("CreateEmployee")]
         public IActionResult CreateEmployee()
 
         {
@@ -63,6 +69,7 @@ namespace employee_management_agile.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin,Manager")]
         [ValidateAntiForgeryToken]
+        [Route("CreateEmployee")]
         public async Task<IActionResult> CreateEmployee(EmpModel employee)
 
         {
@@ -83,6 +90,7 @@ namespace employee_management_agile.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin,Manager")]
+        [Route("EditEmployee/{id}")]
         public IActionResult EditEmployee(int id)
 
         {
@@ -102,6 +110,7 @@ namespace employee_management_agile.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin,Manager")]
         [ValidateAntiForgeryToken]
+        [Route("EditEmployee/{id}")]
         public async Task<IActionResult> EditEmployee(EmpModel employee)
 
         {
@@ -132,6 +141,7 @@ namespace employee_management_agile.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
+        [Route("DeleteEmployee/{id}")]
         public IActionResult DeleteEmployee(int id)
 
         {
@@ -174,7 +184,8 @@ namespace employee_management_agile.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin,Manager")]
-        public IActionResult RolesUpdate(int id)
+        [Route("RoleUpdate/{id}")]
+        public IActionResult RoleUpdate(int id)
         {
             var employee = _context.EmployeesTable.FirstOrDefault(e => e.Id == id);
 
@@ -191,6 +202,7 @@ namespace employee_management_agile.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin,Manager")]
         [ValidateAntiForgeryToken]
+        [Route("RoleUpdate/{id}")]
         public async Task<IActionResult> RoleUpdate(EmpModel employee)
         {
             if (ModelState.IsValid)

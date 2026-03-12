@@ -27,6 +27,7 @@ namespace employee_management_agile.Models
         [Range(0, double.MaxValue, ErrorMessage = "Salary must be a positive number.")]
         [Display(Name = "Salary")]
         public decimal Salary { get; set; }
+        [Display(Name = "Role")]
         public string Role { get; set; } = "Employee"; // Default role is Employee
     }
 }

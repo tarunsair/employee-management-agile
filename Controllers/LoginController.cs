@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Identity;
 
 namespace employee_management_agile.Controllers
 {
+    [AllowAnonymous]
+    [Route("Login")]
     public class LoginController : Controller
     {
         private readonly LoginDbContext _context;
@@ -20,6 +22,7 @@ namespace employee_management_agile.Controllers
 
         [HttpGet]
         [AllowAnonymous]
+        [Route("LoginPage")]
         public IActionResult LoginPage()
         {
             return View();
@@ -28,6 +31,7 @@ namespace employee_management_agile.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
+        [Route("LoginPage")]
         public async Task<IActionResult> LoginPage(LoginModel model)
         {
             if (ModelState.IsValid)
@@ -37,7 +41,7 @@ namespace employee_management_agile.Controllers
                 {
                     var httpclaims = new List<Claim>()
                     {
-                    new Claim(ClaimTypes.Name, user.Username),
+                    // new Claim(ClaimTypes.Name, user.Username),
                     new Claim(ClaimTypes.Email, user.Email),
                     new Claim(ClaimTypes.Role, user.Role) // Add the user's role as a claim
                     };
@@ -61,17 +65,19 @@ namespace employee_management_agile.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> LogoutPage()
+        [Route("LogoutPage")]
+        public IActionResult LogoutPage()
         {
-
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme); // Sign out the user
+            HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme); // Sign out the user
             // Implement logout logic here (e.g., clear authentication cookies)
-            return RedirectToAction("LoginPage", "Login");
+            TempData["LogoutMessage"] = "You have been logged out successfully.";
+            return RedirectToAction("LoginPage", "Login"); // Redirect to the login page after logout
         }
+
         [HttpGet]
         [AllowAnonymous]
+        [Route("RegisterPage")]
         public IActionResult RegisterPage()
         {
             return View();
@@ -80,6 +86,7 @@ namespace employee_management_agile.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
+        [Route("RegisterPage")]
         public async Task<IActionResult> RegisterPage(LoginModel model)
         {
             if (ModelState.IsValid)
@@ -98,6 +105,29 @@ namespace employee_management_agile.Controllers
             }
             return View(model);
         }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult RoleBasedPage()
+        {
+            if (User.IsInRole("Admin"))
+            {
+                return RedirectToAction("AdminPage");
+            }
+            else if (User.IsInRole("Manager"))
+            {
+                return RedirectToAction("ManagerPage");
+            }
+            else if (User.IsInRole("Employee"))
+            {
+                return RedirectToAction("EmployeePage");
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied");
+            }
+        }
+
         [HttpGet]
         [AllowAnonymous]
         public IActionResult AccessDenied()

@@ -1,6 +1,14 @@
+@{
+    ViewData["Title"] = "Logout";
+}
 <h2>Logout</h2>
 
 <p>You have been logged out successfully.</p>
 
-<a asp-action="LoginPage" class="btn btn-primary">Login Again</a>
+
+<div class="alert alert-success" role="alert">
+    @TempData["LogoutMessage"]
+</div>
+
+<a asp-action="LoginPage" asp-controller="Login" class="btn btn-primary">Login Again</a>
 
