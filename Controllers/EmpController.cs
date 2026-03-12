@@ -24,11 +24,11 @@ namespace employee_management_agile.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin,Manager,Employee")]
-        public IActionResult GetAllEmployees()
+        public async Task<IActionResult> GetAllEmployees()
 
         {
 
-            var employees = _context.EmployeesTable.ToList();
+            var employees = await _context.EmployeesTable.ToListAsync();
 
             return View(employees);
         }
@@ -62,7 +62,8 @@ namespace employee_management_agile.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin,Manager")]
-        public IActionResult CreateEmployee(EmpModel employee)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateEmployee(EmpModel employee)
 
         {
 
@@ -70,9 +71,9 @@ namespace employee_management_agile.Controllers
 
             {
 
-                _context.EmployeesTable.Add(employee);
+                await _context.EmployeesTable.AddAsync(employee);
 
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return RedirectToAction("GetAllEmployees");
             }
@@ -100,6 +101,7 @@ namespace employee_management_agile.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin,Manager")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditEmployee(EmpModel employee)
 
         {
@@ -120,7 +122,7 @@ namespace employee_management_agile.Controllers
 
                 _context.EmployeesTable.Update(existingEmployee);
 
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return RedirectToAction("GetAllEmployees");
             }
@@ -149,6 +151,7 @@ namespace employee_management_agile.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ActionName("DeleteEmployee")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmedDeleteEmployee(int id)
 
         {
@@ -164,7 +167,7 @@ namespace employee_management_agile.Controllers
 
             _context.EmployeesTable.Remove(employee);
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return RedirectToAction("GetAllEmployees");
         }
@@ -187,6 +190,7 @@ namespace employee_management_agile.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin,Manager")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> RoleUpdate(EmpModel employee)
         {
             if (ModelState.IsValid)
@@ -202,7 +206,7 @@ namespace employee_management_agile.Controllers
 
                 _context.EmployeesTable.Update(existingEmployee);
 
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return RedirectToAction("GetAllEmployees");
             }
