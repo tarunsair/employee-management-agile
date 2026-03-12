@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using employee_management_agile.Models;
 using employee_management_agile.Controllers;
+using System.Xml.Linq;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.LoginPath = "/Login/LoginPage"; // Set the login page URL
         options.LogoutPath = "/Login/LogoutPage"; // Set the logout page URL
         options.AccessDeniedPath = "/Login/AccessDenied"; // Set the access denied page URL
+        options.Cookie.HttpOnly = true; // Set HttpOnly for security
+        options.Cookie.IsEssential = true; // Make the authentication cookie essential
     });
 builder.Services.AddAuthorization(options =>
 {
@@ -64,7 +67,9 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+app.UseAuthentication();
 app.UseAuthorization();
+app.UseSession();
 // app.MapControllerRoute();
 app.MapControllerRoute(
     name: "default",

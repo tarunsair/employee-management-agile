@@ -2,6 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using employee_management_agile.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace employee_management_agile.Controllers
 
@@ -23,22 +27,24 @@ namespace employee_management_agile.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin,Manager,Employee")]
-        public IActionResult GetAllEmployees()
+        [Route("GetAllEmployees")]
+        public async Task<IActionResult> GetAllEmployees()
 
         {
 
-            var employees = _context.EmployeesTable.ToList();
+            var employees = await _context.EmployeesTable.ToListAsync();
 
             return View(employees);
         }
 
         [HttpGet]
         [Authorize(Roles = "Admin,Manager,Employee")]
-        public IActionResult GetEmployeeById(int id)
+        [Route("GetEmployeeById/{id}")]
+        public async Task<IActionResult> GetEmployeeById(int id)
 
         {
 
-            var employee = _context.EmployeesTable.FirstOrDefault(e => e.Id == id);
+            var employee = await _context.EmployeesTable.FirstOrDefaultAsync(e => e.Id == id);
 
             if (employee == null)
 
@@ -52,6 +58,7 @@ namespace employee_management_agile.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin,Manager")]
+        [Route("CreateEmployee")]
         public IActionResult CreateEmployee()
 
         {
@@ -61,7 +68,9 @@ namespace employee_management_agile.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin,Manager")]
-        public IActionResult CreateEmployee(EmpModel employee)
+        [ValidateAntiForgeryToken]
+        [Route("CreateEmployee")]
+        public async Task<IActionResult> CreateEmployee(EmpModel employee)
 
         {
 
@@ -69,9 +78,9 @@ namespace employee_management_agile.Controllers
 
             {
 
-                _context.EmployeesTable.Add(employee);
+                await _context.EmployeesTable.AddAsync(employee);
 
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return RedirectToAction("GetAllEmployees");
             }
@@ -81,6 +90,7 @@ namespace employee_management_agile.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin,Manager")]
+        [Route("EditEmployee/{id}")]
         public IActionResult EditEmployee(int id)
 
         {
@@ -99,13 +109,15 @@ namespace employee_management_agile.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin,Manager")]
-        public IActionResult EditEmployee(EmpModel employee)
+        [ValidateAntiForgeryToken]
+        [Route("EditEmployee/{id}")]
+        public async Task<IActionResult> EditEmployee(EmpModel employee)
 
         {
             if (ModelState.IsValid)
 
             {
-                var existingEmployee = _context.EmployeesTable.FirstOrDefault(e => e.Id == employee.Id);
+                var existingEmployee = await _context.EmployeesTable.FirstOrDefaultAsync(e => e.Id == employee.Id);
 
                 if (existingEmployee == null)
                 {
@@ -117,9 +129,9 @@ namespace employee_management_agile.Controllers
                 existingEmployee.Position = employee.Position;
                 existingEmployee.Salary = employee.Salary;
 
-                _context.EmployeesTable.Update(employee);
+                _context.EmployeesTable.Update(existingEmployee);
 
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return RedirectToAction("GetAllEmployees");
             }
@@ -129,6 +141,7 @@ namespace employee_management_agile.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
+        [Route("DeleteEmployee/{id}")]
         public IActionResult DeleteEmployee(int id)
 
         {
@@ -148,11 +161,12 @@ namespace employee_management_agile.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ActionName("DeleteEmployee")]
-        public IActionResult ConfirmedDeleteEmployee(int id)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ConfirmedDeleteEmployee(int id)
 
         {
 
-            var employee = _context.EmployeesTable.FirstOrDefault(e => e.Id == id);
+            var employee = await _context.EmployeesTable.FirstOrDefaultAsync(e => e.Id == id);
 
             if (employee == null)
 
@@ -163,14 +177,15 @@ namespace employee_management_agile.Controllers
 
             _context.EmployeesTable.Remove(employee);
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return RedirectToAction("GetAllEmployees");
         }
 
         [HttpGet]
         [Authorize(Roles = "Admin,Manager")]
-        public IActionResult RolesUpdate(int id)
+        [Route("RoleUpdate/{id}")]
+        public IActionResult RoleUpdate(int id)
         {
             var employee = _context.EmployeesTable.FirstOrDefault(e => e.Id == id);
 
@@ -186,11 +201,13 @@ namespace employee_management_agile.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin,Manager")]
-        public IActionResult RoleUpdate(EmpModel employee)
+        [ValidateAntiForgeryToken]
+        [Route("RoleUpdate/{id}")]
+        public async Task<IActionResult> RoleUpdate(EmpModel employee)
         {
             if (ModelState.IsValid)
             {
-                var existingEmployee = _context.EmployeesTable.FirstOrDefault(e => e.Id == employee.Id);
+                var existingEmployee = await _context.EmployeesTable.FirstOrDefaultAsync(e => e.Id == employee.Id);
 
                 if (existingEmployee == null)
                 {
@@ -201,7 +218,7 @@ namespace employee_management_agile.Controllers
 
                 _context.EmployeesTable.Update(existingEmployee);
 
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return RedirectToAction("GetAllEmployees");
             }

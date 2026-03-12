@@ -1,0 +1,49 @@
+@model IEnumerable<employee_management_agile.Models.EmpModel>
+
+<h2>Employee List</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Position</th>
+            <th>Department</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var employee in Model)
+        {
+            <tr>
+                <td>@employee.Name</td>
+                <td>@employee.Position</td>
+                <td>@employee.Department</td>
+                <td>
+                    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                    {
+                        <a asp-action="RoleUpdate" asp-controller="Emp" asp-route-id="@employee.Id" class="btn btn-sm btn-warning">Update Role</a>
+                    }
+                </td>
+                <td>
+                    @if (User.IsInRole("Admin") || User.IsInRole("Manager") || User.IsInRole("Employee"))
+                    {
+                    <a asp-action="GetEmployeeById" asp-controller="Emp" asp-route-id="@employee.Id" class="btn btn-sm btn-info">Details</a>
+                    }
+                </td>
+                <td>
+                    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                    {
+                    <a asp-action="EditEmployee" asp-controller="Emp" asp-route-id="@employee.Id" class="btn btn-sm btn-primary">Edit</a>
+                    }
+                </td>
+                <td>
+                    @if (User.IsInRole("Admin"))
+                    {
+                    <a asp-action="DeleteEmployee" asp-controller="Emp" asp-route-id="@employee.Id" class="btn btn-sm btn-danger">Delete</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<a asp-action="CreateEmployee" asp-controller="Emp" class="btn btn-success">Create New Employee</a>
