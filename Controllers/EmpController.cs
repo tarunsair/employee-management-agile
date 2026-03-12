@@ -34,11 +34,11 @@ namespace employee_management_agile.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin,Manager,Employee")]
-        public IActionResult GetEmployeeById(int id)
+        public async Task<IActionResult> GetEmployeeById(int id)
 
         {
 
-            var employee = _context.EmployeesTable.FirstOrDefault(e => e.Id == id);
+            var employee = await _context.EmployeesTable.FirstOrDefaultAsync(e => e.Id == id);
 
             if (employee == null)
 
@@ -99,13 +99,13 @@ namespace employee_management_agile.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin,Manager")]
-        public IActionResult EditEmployee(EmpModel employee)
+        public async Task<IActionResult> EditEmployee(EmpModel employee)
 
         {
             if (ModelState.IsValid)
 
             {
-                var existingEmployee = _context.EmployeesTable.FirstOrDefault(e => e.Id == employee.Id);
+                var existingEmployee = await _context.EmployeesTable.FirstOrDefaultAsync(e => e.Id == employee.Id);
 
                 if (existingEmployee == null)
                 {
@@ -117,7 +117,7 @@ namespace employee_management_agile.Controllers
                 existingEmployee.Position = employee.Position;
                 existingEmployee.Salary = employee.Salary;
 
-                _context.EmployeesTable.Update(employee);
+                _context.EmployeesTable.Update(existingEmployee);
 
                 _context.SaveChanges();
 
@@ -148,11 +148,11 @@ namespace employee_management_agile.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ActionName("DeleteEmployee")]
-        public IActionResult ConfirmedDeleteEmployee(int id)
+        public async Task<IActionResult> ConfirmedDeleteEmployee(int id)
 
         {
 
-            var employee = _context.EmployeesTable.FirstOrDefault(e => e.Id == id);
+            var employee = await _context.EmployeesTable.FirstOrDefaultAsync(e => e.Id == id);
 
             if (employee == null)
 
@@ -186,11 +186,11 @@ namespace employee_management_agile.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin,Manager")]
-        public IActionResult RoleUpdate(EmpModel employee)
+        public async Task<IActionResult> RoleUpdate(EmpModel employee)
         {
             if (ModelState.IsValid)
             {
-                var existingEmployee = _context.EmployeesTable.FirstOrDefault(e => e.Id == employee.Id);
+                var existingEmployee = await _context.EmployeesTable.FirstOrDefaultAsync(e => e.Id == employee.Id);
 
                 if (existingEmployee == null)
                 {
