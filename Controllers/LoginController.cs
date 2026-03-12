@@ -32,7 +32,7 @@ namespace employee_management_agile.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = _context.LoginsTable.FirstOrDefault(u => u.Email == model.Email);
+                var user = await _context.LoginsTable.FirstOrDefaultAsync(u => u.Email == model.Email);
                 if (user != null && BCrypt.Net.BCrypt.Verify(model.Password, user.Password))
                 {
                     var httpclaims = new List<Claim>()
@@ -43,7 +43,12 @@ namespace employee_management_agile.Controllers
                     };
                     var identity = new ClaimsIdentity(httpclaims, CookieAuthenticationDefaults.AuthenticationScheme);
                     var principal = new ClaimsPrincipal(identity);
-                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal,
+                        new AuthenticationProperties
+                        {
+                            IsPersistent = true, // Set to true if you want the cookie to persist across sessions
+                            ExpiresUtc = DateTime.UtcNow.AddMinutes(30) // Set the cookie expiration time
+                        });
                     // Authentication successful, redirect to the desired page
                     return RedirectToAction("GetAllEmployees", "Emp");
                 }
@@ -75,11 +80,11 @@ namespace employee_management_agile.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public IActionResult RegisterPage(LoginModel model)
+        public async Task<IActionResult> RegisterPage(LoginModel model)
         {
             if (ModelState.IsValid)
             {
-                var existingUser = _context.LoginsTable.FirstOrDefault(u => u.Email == model.Email);
+                var existingUser = await _context.LoginsTable.FirstOrDefaultAsync(u => u.Email == model.Email);
                 if (existingUser != null)
                 {
                     ModelState.AddModelError(string.Empty, "Email is already registered.");
@@ -88,7 +93,7 @@ namespace employee_management_agile.Controllers
                 model.Password = BCrypt.Net.BCrypt.HashPassword(model.Password);
 
                 _context.LoginsTable.Add(model);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 return RedirectToAction("LoginPage", "Login");
             }
             return View(model);
