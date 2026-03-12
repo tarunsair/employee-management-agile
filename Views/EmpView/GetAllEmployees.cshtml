@@ -19,9 +19,22 @@
                 <td>@employee.Position</td>
                 <td>@employee.Department</td>
                 <td>
+                    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                    {
+                        <a asp-action="RoleUpdate" asp-route-id="@employee.Id" class="btn btn-sm btn-warning">Update Role</a>
+                    }
+                    @if (User.IsInRole("Admin") || User.IsInRole("Manager") || User.IsInRole("Employee"))
+                    {
                     <a asp-action="DetailsEmployee" asp-route-id="@employee.Id" class="btn btn-sm btn-info">Details</a>
+                    }
+                    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                    {
                     <a asp-action="EditEmployee" asp-route-id="@employee.Id" class="btn btn-sm btn-primary">Edit</a>
+                    }
+                    @if (User.IsInRole("Admin"))
+                    {
                     <a asp-action="DeleteEmployee" asp-route-id="@employee.Id" class="btn btn-sm btn-danger">Delete</a>
+                    }
                 </td>
             </tr>
         }
