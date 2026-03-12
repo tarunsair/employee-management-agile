@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using employee_management_agile.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace employee_management_agile.Controllers
 
