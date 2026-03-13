@@ -70,7 +70,18 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseSession();
+// app.UseEndpoints(endpoints =>
+// {
+//     endpoints.MapControllerRoute(
+//         name: "default",
+//         pattern: "{controller=Login}/{action=LoginPage}/{id?}");
+// });
 // app.MapControllerRoute();
+app.MapGet("/", context =>
+{
+    context.Response.Redirect("/Login/LoginPage");
+    return Task.CompletedTask;
+});
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Login}/{action=LoginPage}/{id?}");
