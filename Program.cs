@@ -80,7 +80,7 @@ app.UseSession();
 app.MapGet("/", context =>
 {
     context.Response.Redirect("/Login/LoginPage");
-    return Task.CompletedTask;
+    return Task.CompletedTask; //latest update
 });
 app.MapControllerRoute(
     name: "default",
